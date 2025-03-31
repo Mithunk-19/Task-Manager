@@ -1,28 +1,21 @@
 import React from "react";
-import { Droppable, Draggable } from "react-beautiful-dnd";
 import TaskItem from "./TaskItem";
 
-const TaskList = ({ tasks, toggleComplete, deleteTask, handleDragEnd }) => {
+const TaskList = ({ tasks, setTasks }) => {
+  const toggleComplete = (id) => {
+    setTasks(tasks.map(task => (task.id === id ? { ...task, completed: !task.completed } : task)));
+  };
+
+  const deleteTask = (id) => {
+    setTasks(tasks.filter(task => task.id !== id));
+  };
+
   return (
-    <Droppable droppableId="tasks">
-      {(provided) => (
-        <ul {...provided.droppableProps} ref={provided.innerRef} className="task-list">
-          {tasks.map((task, index) => (
-            <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
-              {(provided) => (
-                <TaskItem
-                  provided={provided}
-                  task={task}
-                  toggleComplete={toggleComplete}
-                  deleteTask={deleteTask}
-                />
-              )}
-            </Draggable>
-          ))}
-          {provided.placeholder}
-        </ul>
-      )}
-    </Droppable>
+    <ul className="task-list">
+      {tasks.map(task => (
+        <TaskItem key={task.id} task={task} toggleComplete={toggleComplete} deleteTask={deleteTask} />
+      ))}
+    </ul>
   );
 };
 
